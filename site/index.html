@@ -17,10 +17,10 @@
   <div class="row center" style="gap:56px">
     <div class="col grow" style="gap:26px">
       <div class="sec">머신러닝 논문 발표</div>
-      <h1>배선도만으로<br>초파리의 눈을<br>학습시키다</h1>
+      <h1 style="font-size:46px">커넥톰 제약 신경망을 이용한<br>초파리 시각계 신경 활동 예측</h1>
       <p class="lead">Lappalainen et al., <i>Connectome-constrained networks predict neural activity across the fly visual system</i>, Nature 634, 1132–1140 (2024)</p>
       <div class="parts">
-        <span>1 선택 이유</span><span>2 독창성</span><span>3 모델</span><span>4 파이프라인</span><span>5 결과</span><span>6 한계와 내 아이디어</span>
+        <span>1 논문 선택 이유</span><span>2 독창성</span><span>3 모델</span><span>4 파이프라인</span><span>5 결과</span><span>6 한계와 극복 아이디어</span>
       </div>
     </div>
     <canvas id="eye" width="520" height="520" aria-label="초파리 겹눈 721개 기둥 위를 막대가 지나가는 애니메이션"></canvas>
@@ -29,28 +29,27 @@
 
 <!-- ======================================================================= 1부 -->
 <section class="slide">
-  <div class="sec">1 · 논문을 고른 이유</div>
-  <h2>재미있는 오픈소스에서 시작했다</h2>
+  <div class="sec">1부 · 선택 이유</div>
+  <h2>논문을 고른 이유</h2>
   <div class="row">
     <div class="col grow" style="gap:18px;max-width:600px">
       <ol class="story">
-        <li><b>초파리 뇌 지도(커넥톰)가 오픈소스로 공개</b>된 것을 봤다.</li>
-        <li>사람들이 그 지도로 <b>초파리 뇌에게 게임을 시키는</b> 등 여러 실험을 하고 있었다.</li>
-        <li>관련 논문을 찾다가 <b>Nature에 실린 이 논문</b>을 알게 됐다.</li>
-        <li>읽어 보니 <b>신호처리·머신러닝 수업에서 배우는 것</b>과 이어져 있었다.</li>
+        <li>초파리 뇌 지도(커넥톰)가 오픈소스로 공개된 것을 봄</li>
+        <li>그 지도로 초파리 뇌에게 게임을 시키는 등 여러 실험이 진행 중이었음</li>
+        <li>관련 논문을 찾다가 Nature에 실린 이 논문을 알게 됨</li>
+        <li>신호처리·머신러닝 수업 내용과 연결되는 부분이 많아 선택</li>
       </ol>
-      <p class="muted small">연구 분야나 응용 목적에서 출발한 것이 아니라, 재미있어 보여서 골랐다.</p>
     </div>
     <div class="col grow" style="gap:10px">
-      <h3>수업에서 배운 것이 논문 어디에 나오나</h3>
+      <h3>수업 내용과 연결되는 부분</h3>
       <table class="t">
-        <tr><th>수업 개념</th><th>이 논문에서</th></tr>
-        <tr><td>RNN, 활성화 함수</td><td>뇌 모델 자체가 ReLU를 쓰는 순환 신경망</td></tr>
-        <tr><td>역전파, 경사 하강법</td><td>시간을 펼친 역전파(BPTT) + Adam으로 학습</td></tr>
-        <tr><td>CNN, 가중치 공유</td><td>세포 유형마다 파라미터 공유, 디코더는 육각 CNN</td></tr>
+        <tr><th>수업 개념</th><th>논문에서</th></tr>
+        <tr><td>RNN, 활성화 함수</td><td>뇌 모델 = ReLU를 쓰는 순환 신경망</td></tr>
+        <tr><td>역전파, 경사 하강법</td><td>BPTT + Adam으로 학습</td></tr>
+        <tr><td>CNN, 가중치 공유</td><td>세포 유형별 파라미터 공유, 육각 CNN 디코더</td></tr>
         <tr><td>과적합 방지</td><td>적은 파라미터, Dropout, 데이터 증강</td></tr>
-        <tr><td>검증, 모델 선택</td><td>검증 손실로 50개 모델 순위 매기기</td></tr>
-        <tr><td>EEG, 신호처리</td><td>내 실험: 섞인 신호에서 정보 읽어내기</td></tr>
+        <tr><td>검증, 모델 선택</td><td>검증 손실로 50개 모델 비교</td></tr>
+        <tr><td>EEG, 신호처리</td><td>한계 극복 아이디어(6부)</td></tr>
       </table>
     </div>
   </div>
@@ -58,60 +57,58 @@
 
 <!-- ======================================================================= 2부 -->
 <section class="slide">
-  <div class="sec">2 · 독창성 — 풀려는 문제</div>
-  <h2>배선도는 있는데, 뇌가 어떻게 "동작"하는지는 모른다</h2>
+  <div class="sec">2부 · 독창성</div>
+  <h2>배경</h2>
   <div class="row" style="gap:32px">
     <div class="col grow" style="gap:16px">
       <div class="box">
-        <h3>커넥톰이 알려 주는 것</h3>
-        <p class="small">누가 누구와 연결됐는지, 시냅스가 몇 개인지, 흥분성인지 억제성인지</p>
+        <h3>커넥톰으로 알 수 있는 것</h3>
+        <p class="small">뉴런 간 연결 여부, 시냅스 개수, 흥분성/억제성</p>
       </div>
       <div class="box">
-        <h3>커넥톰이 알려 주지 않는 것</h3>
-        <p class="small">각 뉴런이 얼마나 빨리 반응하는지(시간 상수), 쉬고 있을 때 전압(휴지 전위), 연결이 실제로 얼마나 센지 → <b>이걸 모르면 활동을 계산할 수 없다</b></p>
+        <h3>커넥톰으로 알 수 없는 것</h3>
+        <p class="small">뉴런의 반응 속도(시간 상수), 휴지 전위, 실제 연결 세기<br>→ 이 값들이 없으면 신경 활동 계산 불가</p>
       </div>
     </div>
     <div class="col grow" style="gap:12px">
-      <h3>기존에 이 빈칸을 채우던 방법</h3>
-      <div class="opt"><b>① 직접 측정</b><p class="small">세포 유형마다 전극·칼슘 이미징으로 하나하나 잰다. 작은 세포는 기록 자체가 어렵다. 이 모델의 세포 유형 중 ON/OFF 성질이 실험으로 알려진 것은 57개 중 24개뿐이다.</p></div>
-      <div class="opt"><b>② 데이터에 맞춘 모델</b><p class="small">측정한 반응에 모델 값을 맞춘다. 측정이 있는 세포에만 쓸 수 있고, 새 예측은 하기 어렵다.</p></div>
-      <div class="opt hl"><b>이 논문의 질문</b><p class="small">측정 없이, 배선도 + "이 회로가 하는 일"만으로 뉴런 하나하나의 활동을 예측할 수 있을까?</p></div>
+      <h3>기존 방법</h3>
+      <div class="opt"><b>직접 측정</b><p class="small">세포 유형마다 전극·칼슘 이미징으로 기록. 작은 세포는 기록이 어려움. 이 모델의 세포 유형 57개 중 ON/OFF 성질이 실험으로 알려진 것은 24개</p></div>
+      <div class="opt"><b>측정 데이터에 맞춘 모델</b><p class="small">측정된 세포에만 적용 가능, 새 예측이 어려움</p></div>
+      <div class="opt hl"><b>논문의 질문</b><p class="small">측정 없이 커넥톰과 회로의 기능(과제)만으로 개별 뉴런의 활동을 예측할 수 있는가</p></div>
     </div>
   </div>
 </section>
 
 <section class="slide">
-  <div class="sec">2 · 독창성 — 기존 방법과 비교</div>
-  <h2>커넥토믹스(배선도)와 딥러닝(학습)을 처음으로 이 규모에서 합쳤다</h2>
+  <div class="sec">2부 · 독창성</div>
+  <h2>기존 방법과 비교</h2>
   <div class="scroll">
   <table class="t cmp">
-    <tr><th></th><th>데이터에 맞춘 모델</th><th>과제 기반 딥러닝<br><span class="small muted">예: 물체 인식 CNN으로 원숭이 시각피질 설명</span></th><th class="me">이 논문 (DMN)</th></tr>
-    <tr><td>학습에 실제 뉴런 측정</td><td>필요</td><td>불필요</td><td class="me"><b>불필요</b></td></tr>
-    <tr><td>모델 구조</td><td>연구자가 설계</td><td>일반 CNN/RNN</td><td class="me"><b>커넥톰 그대로</b></td></tr>
-    <tr><td>모델 뉴런 ↔ 실제 뉴런</td><td>일부</td><td>대응 없음 (집단 수준 비교)</td><td class="me"><b>하나하나 대응 (45,669개)</b></td></tr>
-    <tr><td>검증 단위</td><td>맞춘 세포</td><td>뇌 영역 전체의 표현 유사도</td><td class="me"><b>세포 유형 하나하나</b></td></tr>
-    <tr><td>측정 안 된 세포 예측</td><td>어렵다</td><td>대응 뉴런이 없어 불가</td><td class="me"><b>가능 (실험 가설이 됨)</b></td></tr>
+    <tr><th></th><th>측정 데이터에 맞춘 모델</th><th>과제 기반 딥러닝<br><span class="small muted">예: 물체 인식 CNN과 원숭이 시각피질 비교</span></th><th class="me">이 논문 (DMN)</th></tr>
+    <tr><td>학습에 뉴런 측정 데이터</td><td>필요</td><td>불필요</td><td class="me"><b>불필요</b></td></tr>
+    <tr><td>모델 구조</td><td>연구자가 설계</td><td>일반 CNN/RNN</td><td class="me"><b>커넥톰</b></td></tr>
+    <tr><td>모델 뉴런과 실제 뉴런</td><td>일부 대응</td><td>대응 없음 (집단 수준 비교)</td><td class="me"><b>일대일 대응 (45,669개)</b></td></tr>
+    <tr><td>검증 단위</td><td>맞춘 세포</td><td>뇌 영역 전체의 표현</td><td class="me"><b>세포 유형 단위</b></td></tr>
+    <tr><td>측정 안 된 세포 예측</td><td>어려움</td><td>불가</td><td class="me"><b>가능</b></td></tr>
   </table>
   </div>
-  <p class="small muted">과제 기반 딥러닝은 "뇌 전체가 비슷한 표현을 배운다"까지만 말할 수 있다. DMN은 "이 세포가 이렇게 반응한다"고 말하고 실험으로 바로 확인할 수 있다.</p>
 </section>
 
 <section class="slide">
-  <div class="sec">2 · 독창성 — 네 가지</div>
-  <h2>왜 이 논문이 새로운가</h2>
+  <div class="sec">2부 · 독창성</div>
+  <h2>독창성</h2>
   <div class="grid2">
-    <div class="pt"><div class="n">1</div><div><h3>측정 없이 예측한다</h3><p class="small">구조는 배선도로 고정하고, 남은 값은 과제(움직임 감지)를 풀도록 학습. 뉴런 측정 데이터는 학습에 <b>한 번도</b> 쓰지 않는다. 그런데도 실험으로 성질이 알려진 세포 유형들의 반응과 맞았다.</p></div></div>
-    <div class="pt"><div class="n">2</div><div><h3>모델 뉴런 = 실제 뉴런</h3><p class="small">모델 뉴런 하나가 "T4a, 몇 번째 기둥"처럼 실제 뉴런 하나에 대응. 그래서 실제 실험과 세포 단위로 바로 비교하고, 측정 안 된 세포에 대해 예측을 내놓을 수 있다.</p></div></div>
-    <div class="pt"><div class="n">3</div><div><h3>규모</h3><p class="small">시각엽 움직임 경로의 세포 유형 65개(광수용체 포함), 뉴런 45,669개, 연결 1,513,231개를 한 모델로 학습. 일부 회로가 아니라 경로 전체.</p></div></div>
-    <div class="pt"><div class="n">4</div><div><h3>불확실성까지 본다</h3><p class="small">같은 설정으로 50개 모델을 학습. 모델끼리 예측이 일치하는 세포는 믿을 만하고, 엇갈리는 세포는 배선도와 과제만으로는 정해지지 않는다는 뜻.</p></div></div>
+    <div class="pt"><div class="n">1</div><div><h3>뉴런 측정 데이터 없이 학습</h3><p class="small">구조는 커넥톰으로 고정, 나머지 값은 움직임 감지 과제로 학습. 학습 과정에 뉴런 측정 데이터를 쓰지 않음</p></div></div>
+    <div class="pt"><div class="n">2</div><div><h3>모델 뉴런과 실제 뉴런의 일대일 대응</h3><p class="small">모델 뉴런 하나가 특정 세포 유형·위치의 실제 뉴런에 대응. 실험 결과와 세포 단위로 직접 비교 가능</p></div></div>
+    <div class="pt"><div class="n">3</div><div><h3>규모</h3><p class="small">세포 유형 65개(광수용체 포함), 뉴런 45,669개, 연결 1,513,231개. 시각엽 움직임 경로 전체를 하나의 모델로 학습</p></div></div>
+    <div class="pt"><div class="n">4</div><div><h3>앙상블을 통한 신뢰도 평가</h3><p class="small">같은 설정으로 50개 모델 학습. 모델 간 예측이 일치하는지로 예측의 신뢰도 판단</p></div></div>
   </div>
-  <p class="small"><b>핵심 메시지:</b> 배선도만으로는 동작을 모르고, 딥러닝만으로는 실제 뉴런과 대응이 없다. 둘을 합치면 "측정하지 않은 뇌의 활동"을 예측할 수 있다.</p>
 </section>
 
 <!-- ======================================================================= 3부 -->
 <section class="slide">
-  <div class="sec">3 · 머신러닝 모델 — DMN</div>
-  <h2>모델은 연결 구조가 고정된 연속시간 순환 신경망(RNN)</h2>
+  <div class="sec">3부 · 모델</div>
+  <h2>DMN (Deep Mechanistic Network)</h2>
   <div class="row" style="gap:30px">
     <div class="col grow" style="gap:14px">
       <div class="eq">
@@ -119,172 +116,170 @@
         <div class="small muted" style="margin-top:6px">w<sub>ij</sub> = 부호 × 시냅스 개수 × 세기 배율 &nbsp;·&nbsp; t = 뉴런 i의 세포 유형</div>
       </div>
       <table class="t">
-        <tr><th>RNN 용어</th><th>DMN에서</th></tr>
+        <tr><th>RNN</th><th>DMN</th></tr>
         <tr><td>은닉 상태 h<sub>t</sub></td><td>뉴런 45,669개의 전압 V</td></tr>
-        <tr><td>순환 가중치 행렬 W</td><td>커넥톰 (희소 행렬, 연결 약 151만 개)</td></tr>
-        <tr><td>활성화 함수</td><td>ReLU: 전압이 0보다 클 때만 신호를 보낸다</td></tr>
+        <tr><td>순환 가중치 행렬 W</td><td>커넥톰 (희소 행렬, 연결 1,513,231개)</td></tr>
+        <tr><td>활성화 함수</td><td>ReLU</td></tr>
         <tr><td>편향 b</td><td>휴지 전위 V<sup>rest</sup></td></tr>
-        <tr><td>시간 펼치기</td><td>dt(학습 시 20 ms)마다 오일러 방법으로 한 단계씩</td></tr>
+        <tr><td>시간 전개</td><td>dt(학습 시 20 ms) 단위 오일러 적분</td></tr>
       </table>
     </div>
     <div class="col" style="width:380px;gap:12px">
-      <h3>무엇을 고정하고, 무엇을 배우나</h3>
-      <div class="param fixed"><span>배선도에서 고정</span><b>연결 여부 · 부호 · 시냅스 개수</b></div>
-      <div class="param learn"><span>학습 (세포 유형마다)</span><b>시간 상수 τ</b><em class="mono">65</em></div>
-      <div class="param learn"><span>학습 (세포 유형마다)</span><b>휴지 전위 V<sup>rest</sup></b><em class="mono">65</em></div>
-      <div class="param learn"><span>학습 (연결 종류마다)</span><b>시냅스 세기 배율</b><em class="mono">604</em></div>
-      <div class="param total"><b>학습하는 값 합계</b><em class="mono">734</em></div>
-      <p class="small muted">flyvis 코드(PPNeuronIGRSynapses)와 사전학습 모델에서 직접 확인한 값</p>
+      <h3>고정 값과 학습 값</h3>
+      <div class="param fixed"><span>커넥톰에서 고정</span><b>연결 여부 · 부호 · 시냅스 개수</b></div>
+      <div class="param learn"><span>학습 (세포 유형별)</span><b>시간 상수 τ</b><em class="mono">65</em></div>
+      <div class="param learn"><span>학습 (세포 유형별)</span><b>휴지 전위 V<sup>rest</sup></b><em class="mono">65</em></div>
+      <div class="param learn"><span>학습 (연결 종류별)</span><b>시냅스 세기 배율</b><em class="mono">604</em></div>
+      <div class="param total"><b>학습 파라미터 합계</b><em class="mono">734</em></div>
     </div>
   </div>
 </section>
 
 <section class="slide">
-  <div class="sec">3 · 머신러닝 모델 — 왜 이 모델인가</div>
-  <h2>귀납적 편향: 파라미터를 2,000분의 1로 줄인다</h2>
+  <div class="sec">3부 · 모델</div>
+  <h2>이 모델을 사용한 이유</h2>
   <div class="row" style="gap:30px">
     <div class="col grow" style="gap:14px">
       <div id="parambar"></div>
-      <p class="small">일반 RNN이라면 연결 약 151만 개마다 가중치를 따로 배워야 한다. DMN은 <b>같은 세포 유형끼리 값을 공유</b>해서 734개만 배운다. 721개 기둥 어디서나 같은 회로가 반복되기 때문이다. CNN이 이미지의 모든 위치에 같은 필터를 쓰는 <b>가중치 공유</b>와 같은 생각이다.</p>
+      <p class="small">일반 RNN은 연결마다 가중치를 따로 학습(약 151만 개). DMN은 같은 세포 유형끼리 값을 공유해 734개만 학습. 721개 기둥에 같은 회로가 반복되므로 가능하며, CNN의 가중치 공유와 같은 원리</p>
     </div>
     <div class="col" style="width:470px;gap:12px">
-      <div class="why"><b>과적합이 적다</b><p class="small">값이 적으니 광류 데이터만으로 학습되고, 처음 보는 자극에도 일반화된다.</p></div>
-      <div class="why"><b>해석할 수 있다</b><p class="small">배운 값이 "T4a의 시간 상수"처럼 생물학적 의미를 가진다.</p></div>
-      <div class="why"><b>세포 단위로 검증할 수 있다</b><p class="small">모델 뉴런 = 실제 뉴런이라 실험 결과와 바로 비교한다.</p></div>
-      <div class="why"><b>연속시간 + ReLU</b><p class="small">움직임 감지는 "어느 신호가 먼저 오나"(시간 차)가 핵심이라 시간 동역학이 필요하다. ReLU는 "일정 전압 이상일 때만 신호를 보낸다"는 시냅스 성질을 가장 단순하게 표현한다.</p></div>
+      <div class="why"><b>과적합 감소</b><p class="small">파라미터 수가 적어 광류 데이터만으로 학습 가능</p></div>
+      <div class="why"><b>해석 가능성</b><p class="small">학습된 값이 세포 유형별 시간 상수 등 생물학적 의미를 가짐</p></div>
+      <div class="why"><b>세포 단위 검증</b><p class="small">모델 뉴런이 실제 뉴런에 대응해 실험 결과와 직접 비교 가능</p></div>
+      <div class="why"><b>연속시간 동역학, ReLU</b><p class="small">움직임 감지는 신호 간 시간 차이가 중요해 시간에 따른 전압 변화를 모델링. ReLU는 일정 전압 이상에서만 신호를 전달하는 시냅스 성질을 단순화한 것</p></div>
     </div>
   </div>
 </section>
 
 <section class="slide">
-  <div class="sec">3 · 머신러닝 모델 — 디코더</div>
-  <h2>출력은 작은 육각 CNN이 읽는다</h2>
+  <div class="sec">3부 · 모델</div>
+  <h2>디코더</h2>
   <div class="flow">
-    <div class="fbox"><span>입력</span><b>출력 세포 유형들의 전압</b><em>ReLU로 음수 제거 · 721개 기둥 위의 지도</em></div>
+    <div class="fbox"><span>입력</span><b>출력 세포 유형들의 전압</b><em>ReLU 적용, 721개 기둥 위치</em></div>
     <div class="arr">→</div>
-    <div class="fbox"><span>층 1</span><b>5×5 육각 합성곱 → 8채널</b><em>BatchNorm · Softplus · Dropout 0.5</em></div>
+    <div class="fbox"><span>층 1</span><b>5×5 육각 합성곱, 8채널</b><em>BatchNorm, Softplus, Dropout 0.5</em></div>
     <div class="arr">→</div>
-    <div class="fbox"><span>층 2</span><b>5×5 육각 합성곱</b><em>기둥마다 출력</em></div>
+    <div class="fbox"><span>층 2</span><b>5×5 육각 합성곱</b><em>기둥별 출력</em></div>
     <div class="arr">→</div>
-    <div class="fbox out"><span>출력</span><b>광류 2채널</b><em>각 위치의 가로·세로 움직임 속도</em></div>
+    <div class="fbox out"><span>출력</span><b>광류 2채널</b><em>위치별 가로·세로 속도</em></div>
   </div>
-  <div class="row" style="gap:24px;flex:0">
-    <div class="why grow"><b>왜 이렇게 작게?</b><p class="small">디코더가 크면 디코더 혼자 움직임을 계산해 버린다. 층 2개, 채널 8개로 작게 두면 움직임 계산을 <b>뇌 모델(DMN)이 맡을 수밖에 없다</b>. 그래야 DMN 안에서 T4/T5 같은 방향 감지 세포가 생겨난다.</p></div>
-    <div class="why grow"><b>육각 합성곱</b><p class="small">겹눈 기둥은 육각 격자라서, 정사각 필터를 육각 모양으로 가린(mask) 합성곱을 쓴다.</p></div>
-    <div class="why grow"><b>수업 내용 그대로</b><p class="small">BatchNorm(학습 안정화), Dropout(과적합 방지), 합성곱(가중치 공유).</p></div>
+  <div class="row" style="gap:24px;flex:none">
+    <div class="why grow"><b>작은 디코더</b><p class="small">디코더가 크면 움직임 계산을 디코더가 대신하게 됨. 층 2개, 채널 8개로 제한해 계산을 DMN이 담당하도록 함</p></div>
+    <div class="why grow"><b>육각 합성곱</b><p class="small">겹눈 기둥이 육각 격자이므로 정사각 필터에 육각 마스크 적용</p></div>
+    <div class="why grow"><b>정규화</b><p class="small">BatchNorm(학습 안정화), Dropout(과적합 방지)</p></div>
   </div>
-  <p class="small muted">구조: flyvis DecoderGAVP, 사전학습 모델 설정 파일(shape [8, 2], kernel 5, p_dropout 0.5)에서 확인</p>
+  <p class="small muted">flyvis DecoderGAVP, 사전학습 모델 설정(shape [8, 2], kernel 5, p_dropout 0.5) 기준</p>
 </section>
 
 <!-- ======================================================================= 4부 -->
 <section class="slide">
-  <div class="sec">4 · 머신러닝 파이프라인</div>
-  <h2>영화 장면에서 광류를 맞히도록 학습한다</h2>
+  <div class="sec">4부 · 파이프라인</div>
+  <h2>학습 파이프라인</h2>
   <div class="pipe9">
-    <div class="p"><i>1</i><b>데이터</b><span>Sintel 애니메이션 장면 + 정답 광류(픽셀이 어디로 움직였나)</span></div>
-    <div class="p"><i>2</i><b>전처리</b><span>영상을 721개 육각 픽셀로 변환, 19프레임 조각, 50 Hz</span></div>
+    <div class="p"><i>1</i><b>데이터</b><span>Sintel 애니메이션 장면과 정답 광류</span></div>
+    <div class="p"><i>2</i><b>전처리</b><span>721개 육각 픽셀로 변환, 19프레임, 50 Hz</span></div>
     <div class="p"><i>3</i><b>데이터 증강</b><span>뒤집기·회전, 대비·밝기 변화, 가우시안 잡음, 무작위 시간 자르기</span></div>
-    <div class="p"><i>4</i><b>순전파</b><span>광수용체 입력 → DMN 시뮬레이션 → 디코더 → 예측 광류</span></div>
-    <div class="p"><i>5</i><b>손실</b><span>예측과 정답 광류의 L2 거리 + 뉴런 활동 정규화 항</span></div>
-    <div class="p"><i>6</i><b>역전파</b><span>시간을 펼친 역전파(BPTT)로 734개 값 + 디코더 기울기, Adam으로 갱신</span></div>
-    <div class="p"><i>7</i><b>검증</b><span>학습에 안 쓴 fold로 검증 손실 → 가장 좋은 체크포인트</span></div>
-    <div class="p"><i>8</i><b>앙상블</b><span>같은 설정으로 50번 학습, 검증 손실로 순위 (모델 선택)</span></div>
-    <div class="p hl"><i>9</i><b>최종 평가</b><span>학습에 안 쓴 실제 뉴런 측정과 맞추기(fitting) 없이 비교</span></div>
+    <div class="p"><i>4</i><b>순전파</b><span>광수용체 입력 → DMN 시뮬레이션 → 디코더 → 광류 예측</span></div>
+    <div class="p"><i>5</i><b>손실</b><span>예측·정답 광류의 L2 거리 + 뉴런 활동 정규화 항</span></div>
+    <div class="p"><i>6</i><b>역전파</b><span>BPTT로 734개 파라미터와 디코더 기울기 계산, Adam</span></div>
+    <div class="p"><i>7</i><b>검증</b><span>학습에 쓰지 않은 fold의 검증 손실로 체크포인트 선택</span></div>
+    <div class="p"><i>8</i><b>앙상블</b><span>같은 설정으로 50개 학습, 검증 손실로 순위</span></div>
+    <div class="p hl"><i>9</i><b>평가</b><span>학습에 쓰지 않은 실제 뉴런 측정과 비교 (재학습·피팅 없음)</span></div>
   </div>
   <table class="t" style="font-size:15px">
-    <tr><th>설정 (사전학습 모델 파일에서 확인)</th><td>배치 4</td><td>반복 250,000번</td><td>dt 20 ms</td><td>19프레임</td><td>잡음 σ 0.08</td><td>뒤집기·회전 확률 0.5</td><td>4-fold 분할</td></tr>
+    <tr><th>설정</th><td>배치 4</td><td>반복 250,000회</td><td>dt 20 ms</td><td>19프레임</td><td>잡음 σ 0.08</td><td>뒤집기·회전 확률 0.5</td><td>4-fold 분할</td></tr>
   </table>
 </section>
 
 <section class="slide">
-  <div class="sec">4 · 머신러닝 파이프라인 — 핵심 정리</div>
-  <h2>머신러닝 관점에서 이 파이프라인이 특별한 세 가지</h2>
+  <div class="sec">4부 · 파이프라인</div>
+  <h2>파이프라인의 특징</h2>
   <div class="grid3">
-    <div class="pt col"><div class="n">대리 과제</div><h3>지도학습인데 "뉴런의 정답"은 없다</h3><p class="small">손실은 광류 오차뿐. 뉴런이 어떻게 반응해야 하는지는 한 번도 알려 주지 않는다. 과제를 잘 풀다 보니 뉴런이 실제 뇌처럼 반응하게 된다는 가설을 시험한다.</p></div>
-    <div class="pt col"><div class="n">분포 밖 평가</div><h3>테스트 데이터가 아예 다른 종류</h3><p class="small">학습: 영화 장면 → 광류. 평가: 실험실 자극(막대, 깜빡임) → 실제 뉴런 반응. 학습과 테스트가 완전히 분리된 가장 엄격한 일반화 테스트다.</p></div>
-    <div class="pt col"><div class="n">모델 선택</div><h3>해가 하나로 정해지지 않는다</h3><p class="small">같은 설정으로도 50개가 서로 다른 해에 도달한다. 무엇으로 고르나? 정답 뉴런 데이터를 쓰면 반칙이므로 <b>과제 검증 손실</b>로 고른다. 5부에서 이 선택이 맞는지 직접 확인한다.</p></div>
+    <div class="pt col"><div class="n">대리 과제</div><h3>뉴런 정답 없는 지도학습</h3><p class="small">손실은 광류 오차만 사용. 뉴런 반응에 대한 정답은 주지 않음</p></div>
+    <div class="pt col"><div class="n">분포 밖 평가</div><h3>학습과 다른 종류의 테스트</h3><p class="small">학습: 영화 장면 → 광류<br>평가: 실험실 자극 → 실제 뉴런 반응</p></div>
+    <div class="pt col"><div class="n">모델 선택</div><h3>검증 손실 기준 선택</h3><p class="small">같은 설정으로도 모델마다 결과가 다름. 뉴런 데이터 대신 과제 검증 손실로 모델을 선택</p></div>
   </div>
 </section>
 
 <!-- ======================================================================= 5부: 논문 결과 -->
 <section class="slide">
-  <div class="sec">5 · 논문 결과 — 무엇과 비교했나</div>
-  <h2>학습에 한 번도 쓰지 않은 실제 측정과 비교한다</h2>
+  <div class="sec">5부 · 결과</div>
+  <h2>평가 방법</h2>
   <div class="row" style="gap:30px">
     <div class="col grow" style="gap:14px">
-      <p class="small">학습이 끝난 모델에 실험실에서 쓰는 단순한 자극을 보여 주고, 세포 유형마다 반응을 실제 실험 결과와 비교한다. 모델 값을 실험 결과에 다시 맞추는(fitting) 과정은 없다.</p>
+      <p class="small">학습된 모델에 실험실 자극을 입력하고 세포 유형별 반응을 실제 실험 결과와 비교</p>
       <table class="t">
-        <tr><th>비교한 성질</th><th>자극</th><th>실험으로 알려진 것</th></tr>
-        <tr><td><b>ON/OFF 극성</b><br><span class="small muted">밝아질 때 반응하나, 어두워질 때 반응하나</span></td><td>깜빡이는 빛 (flash)</td><td class="mono">24개 유형<br><span class="small">ON 10 · OFF 14</span></td></tr>
-        <tr><td><b>방향 선택성</b><br><span class="small muted">특정 방향 움직임에만 반응하나</span></td><td>움직이는 가장자리 (moving edge)</td><td class="mono">18개 유형<br><span class="small">선택적 8 · 비선택적 10</span></td></tr>
-        <tr><td><b>방향 튜닝 곡선</b><br><span class="small muted">어느 방향을 얼마나 좋아하나</span></td><td>움직이는 가장자리 12방향</td><td class="mono">T4a–d, T5a–d<br><span class="small">Maisak et al. 2013</span></td></tr>
+        <tr><th>비교 항목</th><th>자극</th><th>실험으로 알려진 세포 유형</th></tr>
+        <tr><td><b>ON/OFF 극성</b><br><span class="small muted">밝아질 때 / 어두워질 때 반응</span></td><td>깜빡이는 빛</td><td class="mono">24개<br><span class="small">ON 10 · OFF 14</span></td></tr>
+        <tr><td><b>방향 선택성</b><br><span class="small muted">특정 방향 움직임에만 반응</span></td><td>움직이는 가장자리</td><td class="mono">18개<br><span class="small">선택적 8 · 비선택적 10</span></td></tr>
+        <tr><td><b>방향 튜닝 곡선</b><br><span class="small muted">방향별 반응 크기</span></td><td>움직이는 가장자리 12방향</td><td class="mono">T4a–d, T5a–d<br><span class="small">Maisak et al. 2013</span></td></tr>
       </table>
-      <p class="small muted">개수는 논문의 공식 코드(flyvis)에 들어 있는 비교용 실측 데이터(groundtruth_utils)에서 직접 센 값.</p>
-    </div>
-    <div class="col box" style="width:360px;gap:10px;align-self:flex-start">
-      <h3>머신러닝으로 보면</h3>
-      <p class="small">학습 데이터: 영화 장면 → 광류<br>테스트 데이터: 실험실 자극 → 실제 뉴런 반응</p>
-      <p class="small">입력의 종류도, 맞혀야 하는 대상도 다르다. 학습과 테스트가 완전히 분리된 <b>분포 밖(out-of-distribution) 일반화</b> 테스트다.</p>
+      <p class="small muted">세포 유형 수: flyvis 공식 코드의 비교용 실측 데이터(groundtruth_utils) 기준</p>
     </div>
   </div>
 </section>
 
 <section class="slide">
-  <div class="sec">5 · 논문 결과 — 방향 감지 세포</div>
-  <h2>아무도 가르치지 않았는데 방향 감지 세포가 생겼다</h2>
+  <div class="sec">5부 · 결과</div>
+  <h2>T4/T5 방향 선택성</h2>
   <div class="row" style="gap:30px">
     <div class="col" style="width:560px;gap:8px">
       <div id="gtpolars" class="polars"></div>
-      <div class="legend"><span><i style="border-color:var(--on)"></i>T4 (밝은 가장자리)</span><span><i style="border-color:var(--off)"></i>T5 (어두운 가장자리)</span><span>실제 측정 튜닝 곡선 (Maisak et al. 2013)</span></div>
+      <div class="legend"><span><i style="border-color:var(--on)"></i>T4 (밝은 가장자리)</span><span><i style="border-color:var(--off)"></i>T5 (어두운 가장자리)</span><span>실제 측정 (Maisak et al. 2013)</span></div>
     </div>
     <div class="col grow" style="gap:14px">
-      <p class="small">초파리의 움직임 감지 세포 T4와 T5는 각각 4개 하위 유형(a–d)으로 나뉘고, 하위 유형마다 <b>앞→뒤, 뒤→앞, 위, 아래 중 한 방향</b>에만 강하게 반응한다(왼쪽: 실제 측정).</p>
-      <p class="small">논문의 모델은 광류를 맞히도록 학습했을 뿐인데, 모델 안의 T4/T5가 <b>실제와 같은 방향 선택성</b>을 갖게 되었다. 반대로 실험에서 방향 선택성이 없다고 알려진 세포(Mi1, Tm3 등 10개 유형)는 모델에서도 방향 선택성이 거의 없었다.</p>
-      <p class="small muted">공개 모델(과제 손실 상위 10개)로 직접 확인한 방향 선택성 지수(DSI, 0~1) 중앙값: 방향 선택적 8개 유형 0.52, 비선택적 10개 유형 0.02</p>
-      <div class="box" style="padding:12px 16px"><p class="small"><b>의미:</b> 배선도가 "어떤 계산을 할 수 있는지"를 강하게 제약하고, 과제가 "그중 무엇을 할지"를 정한다. 둘을 합치면 뉴런 기능이 나온다.</p></div>
+      <ul class="dots small">
+        <li>T4, T5는 각각 하위 유형 a–d로 나뉘며 하위 유형마다 한 방향(앞→뒤, 뒤→앞, 위, 아래)에 반응 (왼쪽: 실제 측정)</li>
+        <li>광류 과제로만 학습한 모델에서도 T4/T5가 같은 방향 선택성을 보임</li>
+        <li>방향 선택성이 없다고 알려진 10개 유형(Mi1, Tm3 등)은 모델에서도 방향 선택성이 거의 없음</li>
+      </ul>
+      <p class="small muted">공개 모델(과제 손실 상위 10개) 기준 방향 선택성 지수(DSI) 중앙값: 방향 선택적 유형 0.52, 비선택적 유형 0.02</p>
     </div>
   </div>
 </section>
 
 <section class="slide">
-  <div class="sec">5 · 논문 결과 — 앙상블과 모델 선택</div>
-  <h2>50개 모델은 서로 다른 해를 찾았다. 그래서 과제 성능으로 고른다</h2>
+  <div class="sec">5부 · 결과</div>
+  <h2>앙상블과 모델 선택</h2>
   <div class="grid3">
-    <div class="pt col"><div class="n">관찰</div><h3>해가 하나가 아니다</h3><p class="small">같은 설정으로 50번 학습해도 세포 유형에 따라 모델마다 반응이 다르다. 배선도와 과제만으로는 일부 값이 하나로 정해지지 않는다는 뜻이다.</p></div>
-    <div class="pt col"><div class="n">분석</div><h3>해를 묶어 본다</h3><p class="small">세포 유형마다 50개 모델의 반응을 UMAP으로 차원 축소하고 군집화해, 모델들이 어떤 종류의 해로 나뉘는지 본다. 비지도 학습을 결과 해석에 쓴 예.</p></div>
-    <div class="pt col"><div class="n">선택</div><h3>과제 손실이 낮을수록 실제와 가깝다</h3><p class="small">과제(광류) 검증 손실이 낮은 모델일수록 실제 측정과 더 잘 맞는 경향 → 뉴런 데이터를 보지 않고 <b>과제 성능만으로</b> 좋은 모델을 고를 수 있다. 정답 뉴런 데이터로 고르면 테스트 데이터를 본 셈이 된다.</p></div>
+    <div class="pt col"><div class="n">관찰</div><h3>모델마다 다른 해</h3><p class="small">같은 설정으로 학습한 50개 모델의 반응이 세포 유형에 따라 다름. 커넥톰과 과제만으로는 일부 값이 하나로 정해지지 않음</p></div>
+    <div class="pt col"><div class="n">분석</div><h3>UMAP과 군집화</h3><p class="small">세포 유형별로 50개 모델의 반응을 UMAP으로 차원 축소 후 군집화해 해의 종류를 분석</p></div>
+    <div class="pt col"><div class="n">선택</div><h3>과제 손실과 실측 일치도</h3><p class="small">과제 검증 손실이 낮은 모델일수록 실제 측정과 더 일치하는 경향. 뉴런 데이터 없이 과제 성능으로 모델 선택 가능</p></div>
   </div>
   <div class="flow" style="margin-top:6px">
-    <div class="fbox"><span>학습</span><b>같은 설정으로 50번</b><em>무작위성 때문에 서로 다른 해</em></div>
+    <div class="fbox"><span>학습</span><b>같은 설정으로 50개</b><em>서로 다른 해</em></div>
     <div class="arr">→</div>
-    <div class="fbox"><span>순위</span><b>과제 검증 손실로 정렬</b><em>뉴런 데이터는 보지 않는다</em></div>
+    <div class="fbox"><span>순위</span><b>과제 검증 손실</b><em>뉴런 데이터 사용 안 함</em></div>
     <div class="arr">→</div>
-    <div class="fbox"><span>예측</span><b>상위 모델들의 반응</b><em>일치하면 믿을 만한 예측</em></div>
+    <div class="fbox"><span>예측</span><b>상위 모델들의 반응</b><em>모델 간 일치도 확인</em></div>
     <div class="arr">→</div>
-    <div class="fbox out"><span>평가</span><b>실제 측정과 비교</b><em>테스트 데이터는 마지막에 한 번</em></div>
+    <div class="fbox out"><span>평가</span><b>실제 측정과 비교</b><em>테스트 데이터는 마지막에 사용</em></div>
   </div>
-  <p class="small muted">머신러닝 관점: 앙상블 = 불확실성 추정, 검증 손실 기반 모델 선택 = 테스트 데이터를 건드리지 않는 정당한 선택.</p>
 </section>
 
 <section class="slide">
-  <div class="sec">5 · 논문 결과 — 예측</div>
-  <h2>측정되지 않은 세포에 대한 예측을 내놓는다</h2>
+  <div class="sec">5부 · 결과</div>
+  <h2>측정되지 않은 세포에 대한 예측</h2>
   <div class="row" style="gap:30px">
     <div class="col grow" style="gap:14px">
       <div class="unknown">
-        <div class="ubar"><div class="known" style="flex:24">ON/OFF가 알려진 유형 24</div><div class="unk" style="flex:33">아직 모르는 유형 33</div></div>
-        <p class="small muted">이 모델의 세포 유형 57개(광수용체 제외) 기준. flyvis 비교 데이터에서 센 값.</p>
+        <div class="ubar"><div class="known" style="flex:24">ON/OFF가 알려진 유형 24</div><div class="unk" style="flex:33">알려지지 않은 유형 33</div></div>
+        <p class="small muted">광수용체를 제외한 세포 유형 57개 기준</p>
       </div>
-      <p class="small">모델 뉴런 하나하나가 실제 세포 유형에 대응하므로, <b>아직 아무도 기록하지 않은 세포 유형</b>에 대해서도 "밝음/어두움 중 무엇에 반응할지", "움직임 방향을 가릴지"를 예측할 수 있다.</p>
-      <p class="small">앙상블 모델들의 예측이 일치하면 믿을 만한 예측, 엇갈리면 실험이 필요한 부분이다. 실험 연구자에게 <b>무엇을 먼저 측정할지</b> 알려 주는 도구가 된다.</p>
+      <ul class="dots small">
+        <li>모델 뉴런이 실제 세포 유형에 대응하므로 아직 기록되지 않은 세포 유형의 반응(ON/OFF, 방향 선택성)도 예측 가능</li>
+        <li>앙상블 모델 간 예측이 일치하는 경우 신뢰도 높음, 엇갈리는 경우 추가 실험 필요</li>
+        <li>실험에서 우선적으로 측정할 대상을 정하는 데 활용 가능</li>
+      </ul>
     </div>
     <div class="col box" style="width:380px;gap:10px;align-self:flex-start">
-      <h3>5부 정리</h3>
+      <h3>결과 요약</h3>
       <ul class="dots small">
-        <li>학습에 안 쓴 실측과 비교해 알려진 성질을 재현</li>
-        <li>T4/T5 방향 선택성이 과제 학습만으로 생겨남</li>
-        <li>모델마다 해가 다름 → 앙상블 + 과제 성능으로 선택</li>
-        <li>측정 안 된 세포에 대한 검증 가능한 예측</li>
+        <li>학습에 쓰지 않은 실측 결과와 일치</li>
+        <li>T4/T5 방향 선택성이 과제 학습만으로 나타남</li>
+        <li>모델마다 해가 달라 앙상블과 과제 성능으로 선택</li>
+        <li>측정되지 않은 세포에 대한 예측 제공</li>
       </ul>
     </div>
   </div>
@@ -292,33 +287,37 @@
 
 <!-- ======================================================================= 6부: 한계와 극복 아이디어 -->
 <section class="slide">
-  <div class="sec">6 · 논문의 한계</div>
-  <h2>이 논문이 답하지 않은 것</h2>
+  <div class="sec">6부 · 한계</div>
+  <h2>논문의 한계</h2>
   <div class="grid2">
-    <div class="pt me"><div class="n">1</div><div><h3>세포 단위 활동만 다룬다</h3><p class="small">모델은 뉴런 하나하나의 전압을 내놓는다. 하지만 사람에게서 쉽게 얻는 신호(EEG 등)는 수많은 뉴런이 <b>섞인</b> 신호다. 섞인 신호로도 뇌가 본 것을 읽어낼 수 있는지는 다루지 않았다.</p></div></div>
-    <div class="pt"><div class="n">2</div><div><h3>해가 하나로 정해지지 않는다</h3><p class="small">같은 설정으로도 모델마다 다른 해. 어떤 세포 유형은 배선도와 과제만으로 성질이 정해지지 않는다.</p></div></div>
-    <div class="pt"><div class="n">3</div><div><h3>단순한 뉴런 모델</h3><p class="small">스파이크 없는 점 뉴런, 즉각 전달 시냅스. 수상돌기 계산, 신경조절물질 등은 빠졌다.</p></div></div>
-    <div class="pt"><div class="n">4</div><div><h3>과제가 하나</h3><p class="small">광류 예측만으로 학습. 움직임 감지와 관계없는 기능의 세포는 제대로 정해지지 않을 수 있다.</p></div></div>
+    <div class="pt me"><div class="n">1</div><div><h3>세포 단위 활동만 다룸</h3><p class="small">EEG처럼 많은 뉴런이 섞인 신호에서도 같은 정보를 읽어낼 수 있는지는 다루지 않음</p></div></div>
+    <div class="pt"><div class="n">2</div><div><h3>해가 하나로 정해지지 않음</h3><p class="small">같은 설정에서도 모델마다 다른 해. 일부 세포 유형은 커넥톰과 과제만으로 성질이 정해지지 않음</p></div></div>
+    <div class="pt"><div class="n">3</div><div><h3>단순한 뉴런 모델</h3><p class="small">스파이크 없는 점 뉴런, 즉각 전달 시냅스. 수상돌기 계산, 신경조절물질 미반영</p></div></div>
+    <div class="pt"><div class="n">4</div><div><h3>단일 과제</h3><p class="small">광류 예측만으로 학습. 움직임 감지와 관련 없는 세포는 성질이 제대로 정해지지 않을 수 있음</p></div></div>
   </div>
   <div class="box">
-    <h3>1번을 극복할 아이디어를 직접 시험해 봤다 (덧붙임)</h3>
-    <p class="small">2~4번은 모델을 다시 학습해야 하는데 노트북 CPU로는 어렵다. 1번은 공개된 학습 모델을 그대로 두고, 수업의 머신러닝 기법으로 답할 수 있다.</p>
+    <h3>1번에 대한 극복 아이디어</h3>
+    <p class="small">2~4번은 모델 재학습이 필요해 노트북 CPU로는 어려움. 1번은 공개된 학습 모델을 그대로 사용해 머신러닝 기법으로 확인 가능</p>
   </div>
 </section>
 
 <section class="slide">
-  <div class="sec">6 · 한계 극복 아이디어 (덧붙임 실험)</div>
-  <h2>같은 가상 뇌를 "섞어서" 측정하면 정보가 얼마나 남을까?</h2>
+  <div class="sec">6부 · 극복 아이디어</div>
+  <h2>가상 뇌에서 섞인 신호 디코딩</h2>
   <div class="row" style="gap:26px">
     <div class="col grow" style="gap:12px">
-      <p class="small"><b>아이디어:</b> 학습된 모델을 고정된 "녹화 장치"로 쓴다. 같은 뇌에서 세포 단위 신호와 EEG처럼 섞인 신호를 동시에 만들고, 각각에서 움직임 방향(8방향)을 분류해 본다. 실제 뇌에서는 둘을 정답과 함께 동시에 얻기 어렵지만 가상 뇌에서는 가능하다.</p>
+      <ul class="dots small">
+        <li>학습된 모델을 고정하고 신경 활동을 기록하는 용도로 사용</li>
+        <li>같은 뇌에서 세포 단위 신호와 EEG처럼 섞인 신호를 만들어 움직임 방향(8방향) 분류 정확도 비교</li>
+        <li>실제 뇌에서는 두 신호를 정답과 함께 동시에 얻기 어려움</li>
+      </ul>
       <table class="t" style="font-size:15px">
-        <tr><th>신호</th><th>만드는 법</th><th>비유</th></tr>
-        <tr><td class="sa-t">A · 65채널</td><td>세포 유형마다 전압 평균</td><td>특정 세포만 골라 기록</td></tr>
-        <tr><td class="sb4-t">B · 4채널</td><td>눈의 4구역마다 모든 뉴런 합</td><td>EEG 전극 4개</td></tr>
-        <tr><td class="sb1-t">B · 1채널</td><td>눈 전체 모든 뉴런 합</td><td>EEG 전극 1개</td></tr>
+        <tr><th>신호</th><th>구성</th><th>대응</th></tr>
+        <tr><td class="sa-t">A · 65채널</td><td>세포 유형별 전압 평균</td><td>특정 세포 기록</td></tr>
+        <tr><td class="sb4-t">B · 4채널</td><td>눈의 4구역별 전체 뉴런 합</td><td>EEG 전극 4개</td></tr>
+        <tr><td class="sb1-t">B · 1채널</td><td>눈 전체 뉴런 합</td><td>EEG 전극 1개</td></tr>
       </table>
-      <p class="small muted">48개 자극(8방향 × 밝은/어두운 막대 × 속도 3) × 측정 잡음 20번 · 특징: 최고·최저 전압, 최고점 시간, 평균 · 로지스틱 회귀 · 속도 기준 교차검증(처음 보는 속도로 테스트) · 정규화와 특징 선택은 학습 fold 안에서만</p>
+      <p class="small muted">자극 48개(8방향 × 밝기 2 × 속도 3) × 측정 잡음 20회 · 특징: 최고·최저 전압, 최고점 시간, 평균 · 로지스틱 회귀 · 속도 기준 교차검증 · 정규화와 특징 선택은 학습 fold 안에서만</p>
     </div>
     <div class="col" style="width:300px;gap:8px">
       <img class="fig" src="img/fig_zones.png" alt="겹눈을 4개 구역으로 나눈 지도" style="max-height:330px">
@@ -327,8 +326,8 @@
 </section>
 
 <section class="slide">
-  <div class="sec">6 · 한계 극복 아이디어 — 결과</div>
-  <h2>섞을수록 정보가 사라지지만, 잘 고른 세포 몇 개면 되찾는다</h2>
+  <div class="sec">6부 · 극복 아이디어</div>
+  <h2>디코딩 결과</h2>
   <div class="row" style="gap:26px">
     <div class="col" style="width:560px;gap:6px"><div id="acc"></div>
       <label for="noise" class="small muted">측정 잡음: <b id="noiseval" class="mono"></b></label>
@@ -341,20 +340,20 @@
         <div style="border-color:var(--sb1)"><div class="v" id="vB1"></div><div class="l">B · 1채널</div></div>
       </div>
       <ul class="dots small">
-        <li><b>섞으면 손실:</b> 잡음 1배에서 99.9% → 84.1% → 40.3% (우연 12.5%). 잡음이 클수록 격차가 커진다.</li>
-        <li><b>특징 선택:</b> 세포 유형 3개로 98.1%. 세 fold 모두 T4a와 T5d를 골랐다 — 논문이 말한 방향 감지 세포를 데이터가 다시 찾아냈다.</li>
-        <li><b>채널 종류가 중요:</b> 4채널끼리 비교하면 잘 고른 세포 4개 99.5% ≫ EEG식 4구역 84.1% &gt; 무작위 세포 4개 68.6%(중앙값).</li>
-        <li><b>누수 확인:</b> 정답을 섞은 데이터에서 올바른 방법은 우연 이하, 테스트 정답을 보고 특징을 고르면 22.4%의 가짜 성능.</li>
+        <li>잡음 1배 정확도: 99.9% / 84.1% / 40.3% (우연 수준 12.5%). 잡음이 클수록 차이 증가</li>
+        <li>특징 선택: 세포 유형 3개로 98.1%. 모든 fold에서 T4a, T5d 선택</li>
+        <li>4채널끼리 비교: 선택한 세포 4개 99.5%, 4구역 84.1%, 무작위 세포 4개 68.6%(중앙값)</li>
+        <li>정답을 섞은 데이터에서 테스트 정답을 보고 특징을 선택하면 22.4% (올바른 방법은 우연 수준 이하)</li>
       </ul>
-      <p class="small muted">자세한 그래프는 부록. 한계: 시뮬레이션 안의 결론, 단순 합산 EEG, 독립 가우시안 잡음.</p>
+      <p class="small muted">한계: 시뮬레이션 결과, 단순 합산 EEG, 독립 가우시안 잡음. 세부 그래프는 부록</p>
     </div>
   </div>
 </section>
 
-<!-- ======================================================================= 덧붙임: 재현 -->
+<!-- ======================================================================= 재현 -->
 <section class="slide">
-  <div class="sec">덧붙임 · 논문대로 직접 해 보기</div>
-  <h2>공개된 모델로 논문의 T4/T5 결과를 노트북에서 다시 해 봤다</h2>
+  <div class="sec">추가</div>
+  <h2>공개 모델로 T4/T5 결과 재현</h2>
   <div class="row" style="gap:26px">
     <div class="stimbox">
       <img id="stimgif" src="media/stimulus_edge_bright_000.gif" alt="겹눈 위를 움직이는 가장자리 자극">
@@ -366,7 +365,7 @@
       </div>
       <div class="seg" role="radiogroup" aria-label="모델">
         <label><input type="radio" name="pmode" value="best" checked>최고 모델</label>
-        <label><input type="radio" name="pmode" value="top">상위 10개 각각</label>
+        <label><input type="radio" name="pmode" value="top">상위 10개</label>
       </div>
     </div>
     <div class="col grow" style="gap:6px">
@@ -377,7 +376,7 @@
         <span><i style="border-color:var(--muted);border-top-style:dashed"></i>실제 측정</span>
         <span>숫자 = 실제 / 모델 선호 방향</span>
       </div>
-      <p class="small">공개 모델 50개, 공식 튜토리얼 자극, CPU만. <b>과제 손실 1위 모델은 8개 모두 정답</b>, 1–10위 모델 평균 5.1개 vs 41–50위 2.8개 → "모델마다 다른 해"와 "과제 성능으로 고르기"가 그대로 보였다.</p>
+      <p class="small">flyvis 공개 모델 50개, 공식 튜토리얼 자극, CPU 사용. 과제 손실 1위 모델은 8개 하위 유형 모두 일치(오차 45° 미만). 과제 손실 1–10위 모델 평균 5.1개, 41–50위 평균 2.8개 일치</p>
     </div>
   </div>
 </section>
@@ -386,126 +385,128 @@
   <div class="sec">정리</div>
   <h2>정리</h2>
   <div class="grid2">
-    <div class="pt"><div class="n">1</div><div><h3>문제</h3><p class="small">배선도(커넥톰)는 있지만 뉴런의 동작 값은 모른다. 하나하나 측정하기는 어렵다.</p></div></div>
-    <div class="pt"><div class="n">2</div><div><h3>방법</h3><p class="small">배선도로 구조를 고정한 연속시간 RNN(학습 값 734개)을 광류 과제로 BPTT 학습. 50개 앙상블, 과제 검증 손실로 모델 선택.</p></div></div>
-    <div class="pt"><div class="n">3</div><div><h3>결과</h3><p class="small">뉴런 데이터 없이 학습했는데 알려진 세포 성질(ON/OFF, T4/T5 방향 선택성)을 재현하고, 측정 안 된 세포를 예측했다.</p></div></div>
-    <div class="pt"><div class="n">4</div><div><h3>의미</h3><p class="small">커넥토믹스(구조)와 딥러닝(학습)을 합치면 측정하지 않은 뇌의 활동을 예측할 수 있다. 머신러닝의 귀납적 편향을 생물학 구조로 준 사례.</p></div></div>
+    <div class="pt"><div class="n">1</div><div><h3>문제</h3><p class="small">커넥톰만으로는 뉴런의 동작 값을 알 수 없고, 직접 측정은 어려움</p></div></div>
+    <div class="pt"><div class="n">2</div><div><h3>방법</h3><p class="small">커넥톰으로 구조를 고정한 연속시간 RNN(학습 파라미터 734개)을 광류 과제로 BPTT 학습. 50개 앙상블, 검증 손실로 모델 선택</p></div></div>
+    <div class="pt"><div class="n">3</div><div><h3>결과</h3><p class="small">뉴런 데이터 없이 학습했으나 알려진 세포 성질(ON/OFF, T4/T5 방향 선택성)과 일치. 측정되지 않은 세포에 대한 예측 제공</p></div></div>
+    <div class="pt"><div class="n">4</div><div><h3>의의</h3><p class="small">커넥톰 구조를 귀납적 편향으로 사용한 딥러닝 모델로 신경 활동 예측</p></div></div>
   </div>
-  <p class="small muted">덧붙임: 한계(섞인 신호)는 가상 뇌 디코딩 실험으로, 핵심 결과는 공개 모델 재현으로 직접 확인해 봤다.</p>
 </section>
 
 <section class="slide">
-  <div class="sec">참고</div>
+  <div class="sec">참고문헌</div>
   <h2>감사합니다</h2>
   <div class="col" style="gap:12px;max-width:960px">
     <p class="small">Lappalainen, J. K. et al. Connectome-constrained networks predict neural activity across the fly visual system. <i>Nature</i> 634, 1132–1140 (2024).</p>
-    <p class="small">flyvis (공식 코드·사전학습 모델 50개): github.com/TuragaLab/flyvis</p>
-    <p class="small">Maisak, M. S. et al. A directional tuning map of Drosophila elementary motion detectors. <i>Nature</i> 500, 212–216 (2013). — T4/T5 실제 측정 튜닝 곡선 (flyvis에 포함)</p>
-    <p class="small muted">재현·덧붙임 실험 코드: github.com/JsonParc/ML_project (Python 3.12, flyvis 1.2.0, scikit-learn 1.9.1, CPU만 사용)</p>
-    <p class="small muted">이 뒤는 질문 대비 부록입니다.</p>
+    <p class="small">flyvis (공식 코드, 사전학습 모델 50개): github.com/TuragaLab/flyvis</p>
+    <p class="small">Maisak, M. S. et al. A directional tuning map of Drosophila elementary motion detectors. <i>Nature</i> 500, 212–216 (2013).</p>
+    <p class="small muted">재현 및 추가 실험 코드: github.com/JsonParc/ML_project</p>
+    <p class="small muted">이후 슬라이드: 질문 대비 부록</p>
   </div>
 </section>
 
-<!-- ======================================================================= 부록 (질문 대비) -->
+<!-- ======================================================================= 부록 -->
 <section class="slide">
-  <div class="sec">부록 A · 가상 뇌 들여다보기</div>
-  <h2>막대 하나가 지나갈 때 겹눈 전체의 반응</h2>
+  <div class="sec">부록 A</div>
+  <h2>겹눈 위 신경 활동</h2>
   <div class="row">
     <div class="col" style="width:760px"><video src="media/activity.mp4" muted loop playsinline controls></video></div>
     <div class="col grow" style="gap:14px">
-      <p class="small">밝은 막대가 0°(오른쪽) 방향으로 지나가면 721개 기둥의 T4 뉴런이 막대를 따라 차례로 반응한다. 0°를 좋아하는 T4b가 가장 크게 반응한다.</p>
-      <p class="muted small">오른쪽 아래 = 4구역으로 더한 가상 EEG.</p>
+      <ul class="dots small">
+        <li>밝은 막대가 0°(오른쪽) 방향으로 이동할 때 721개 기둥의 T4 활동</li>
+        <li>막대 위치를 따라 순차적으로 반응, 0° 선호 유형인 T4b의 반응이 가장 큼</li>
+        <li>오른쪽 아래: 4구역 합산 신호(가상 EEG)</li>
+      </ul>
     </div>
   </div>
 </section>
 
 <section class="slide">
-  <div class="sec">부록 B · 재현 — 모델 선택</div>
-  <h2>과제 손실이 낮은 모델일수록 실제 뇌와 더 비슷했다</h2>
+  <div class="sec">부록 B</div>
+  <h2>재현: 과제 손실과 일치도</h2>
   <div class="row" style="gap:28px">
     <div class="col" style="width:560px;gap:4px"><div id="ensbar"></div></div>
     <div class="col grow" style="gap:6px"><div id="ens"></div>
-      <div class="legend"><span><i style="border-color:var(--accent);border-top-width:8px;width:8px;border-radius:50%"></i>과제 손실 1위 (덧붙임 실험의 녹화 장치)</span><span>점 하나 = 모델 하나 (50개)</span></div>
+      <div class="legend"><span><i style="border-color:var(--accent);border-top-width:8px;width:8px;border-radius:50%"></i>과제 손실 1위 모델</span><span>점 하나 = 모델 하나 (50개)</span></div>
     </div>
   </div>
-  <p class="small">순위 상관 ρ = −0.32. 정답 기준: 선호 방향 오차 45° 미만.</p>
+  <p class="small">순위 상관 ρ = −0.32. 일치 기준: 선호 방향 오차 45° 미만</p>
 </section>
 
 <section class="slide">
-  <div class="sec">부록 C · 덧붙임 실험 — 신호와 혼동 행렬</div>
-  <h2>가상 EEG 4채널은 어떤 방향을 헷갈리나</h2>
+  <div class="sec">부록 C</div>
+  <h2>가상 EEG 4채널 신호와 혼동 행렬</h2>
   <div class="row" style="gap:28px">
-    <div class="col grow" style="gap:8px">
-      <div id="sigbtns" class="btns"></div>
-      <div class="row" style="gap:12px;align-items:center;flex:0">
-        <img id="sigimg" src="media/stimulus_bright_000.gif" alt="막대 자극" style="width:100px;height:100px;border-radius:50%;background:#000">
-        <div class="grow" id="sigplot"></div>
+    <div class="col" style="width:560px;gap:8px">
+      <div class="row" style="gap:12px;align-items:center;flex:none">
+        <img id="sigimg" src="media/stimulus_bright_000.gif" alt="막대 자극" style="width:90px;height:90px;border-radius:50%;background:#000;flex:none">
+        <div id="sigbtns" class="btns"></div>
       </div>
+      <div id="sigplot"></div>
       <div class="legend"><span><i style="border-color:var(--z1)"></i>채널1 왼쪽 위</span><span><i style="border-color:var(--z2)"></i>채널2 오른쪽 위</span><span><i style="border-color:var(--z3)"></i>채널3 왼쪽 아래</span><span><i style="border-color:var(--z4)"></i>채널4 오른쪽 아래</span></div>
     </div>
-    <div class="col" style="width:520px;gap:6px">
-      <div class="row" style="gap:10px;flex:0">
+    <div class="col grow" style="gap:8px">
+      <div class="row" style="gap:10px;flex:none">
         <div class="col grow" style="gap:2px"><span class="small sa-t">A 혼동 행렬 (%)</span><div id="cmA"></div></div>
         <div class="col grow" style="gap:2px"><span class="small sb4-t">B4 혼동 행렬 (%)</span><div id="cmB"></div></div>
       </div>
-      <p class="small">잡음 슬라이더 값 기준. B4는 대각선 방향(45°/135°/315°)은 잘 맞히고 0°/180°/270°를 헷갈린다. 수평·수직 막대는 두 구역을 동시에 지나 구역 간 시간 차가 사라지기 때문.</p>
+      <p class="small">잡음 1배 기준. B4는 대각선 방향(45°, 135°, 315°) 정확도가 높고 0°, 180°, 270°에서 혼동이 많음. 수평·수직 막대는 두 구역을 동시에 지나 구역 간 시간 차가 줄어들기 때문</p>
     </div>
   </div>
 </section>
 
 <section class="slide">
-  <div class="sec">부록 D · 덧붙임 실험 — 특징 선택</div>
-  <h2>세포 유형 3개면 충분했다</h2>
+  <div class="sec">부록 D</div>
+  <h2>특징 선택 (순차 전진 선택)</h2>
   <div class="row" style="gap:28px">
     <div class="col" style="width:600px"><div id="sfs"></div>
-      <div class="legend"><span><i style="border-color:var(--sa)"></i>올바른 선택 (nested CV)</span><span><i style="border-color:var(--bad);border-top-style:dashed"></i>누수: 테스트 정답을 보고 선택</span></div>
+      <div class="legend"><span><i style="border-color:var(--sa)"></i>학습 fold 안에서 선택 (nested CV)</span><span><i style="border-color:var(--bad);border-top-style:dashed"></i>테스트 정답을 보고 선택 (누수)</span></div>
     </div>
     <div class="col grow" style="gap:12px">
-      <p class="small">순차 전진 선택(래퍼 방식). 선택은 각 fold의 학습 데이터 안에서 안쪽 교차검증으로만. (잡음 1배)</p>
-      <div class="box" style="padding:12px 16px"><h3 style="font-size:15px">fold마다 먼저 뽑힌 세포 유형</h3><ul id="seltypes" class="plain small"></ul></div>
+      <p class="small">잡음 1배, 선택은 각 fold의 학습 데이터 안에서 안쪽 교차검증으로 수행</p>
+      <div class="box" style="padding:12px 16px"><h3 style="font-size:15px">fold별 선택 순서</h3><ul id="seltypes" class="plain small"></ul></div>
     </div>
   </div>
 </section>
 
 <section class="slide">
-  <div class="sec">부록 E · 덧붙임 실험 — 채널 수 맞추기</div>
-  <h2>무작위 세포 4개 vs 가상 EEG 4채널</h2>
+  <div class="sec">부록 E</div>
+  <h2>채널 수를 맞춘 비교</h2>
   <div class="row" style="gap:28px">
     <div class="col" style="width:620px"><div id="rand4"></div></div>
     <div class="col grow" style="gap:12px">
       <table class="t">
         <tr><th>4채널 신호 (잡음 1배)</th><th class="num">정확도</th></tr>
-        <tr><td>잘 고른 세포 유형 4개</td><td class="num">99.5%</td></tr>
+        <tr><td>특징 선택으로 고른 세포 유형 4개</td><td class="num">99.5%</td></tr>
         <tr><td class="sb4-t">가상 EEG 4채널</td><td class="num">84.1%</td></tr>
-        <tr><td>무작위 세포 유형 4개 (중앙값)</td><td class="num">68.6%</td></tr>
+        <tr><td>무작위 세포 유형 4개 (200회 중앙값)</td><td class="num">68.6%</td></tr>
       </table>
     </div>
   </div>
 </section>
 
 <section class="slide">
-  <div class="sec">부록 F · 덧붙임 실험 — 특징과 분류기</div>
-  <h2>시간 영역 특징 vs PSD, 분류기 세 가지</h2>
+  <div class="sec">부록 F</div>
+  <h2>특징과 분류기 비교</h2>
   <div class="row" style="gap:24px">
-    <div class="col grow" style="gap:6px"><h3>특징</h3><div id="feat"></div></div>
+    <div class="col grow" style="gap:6px"><h3>시간 영역 특징 vs PSD</h3><div id="feat"></div></div>
     <div class="col grow" style="gap:6px"><h3>분류기 (C, k는 안쪽 교차검증으로 선택)</h3><div id="clf"></div></div>
   </div>
 </section>
 
 <section class="slide">
-  <div class="sec">부록 G · 덧붙임 실험 — 데이터 누수</div>
-  <h2>정답을 섞은 가짜 데이터에서도 "성능"이 나올까?</h2>
+  <div class="sec">부록 G</div>
+  <h2>데이터 누수 확인</h2>
   <div class="row" style="gap:28px">
     <div class="col" style="width:600px"><div id="shuf"></div>
-      <div class="legend"><span><i style="border-color:var(--sa)"></i>올바른 선택</span><span><i style="border-color:var(--bad);border-top-style:dashed"></i>누수: 테스트 정답을 보고 선택</span></div>
+      <div class="legend"><span><i style="border-color:var(--sa)"></i>학습 fold 안에서 선택</span><span><i style="border-color:var(--bad);border-top-style:dashed"></i>테스트 정답을 보고 선택</span></div>
     </div>
     <div class="col grow" style="gap:12px">
-      <p class="small">48개 조건의 방향 정답을 무작위로 섞었다. 신호와 정답 사이에 관계가 없으므로 정직한 정확도는 우연 수준(12.5%)이어야 한다.</p>
+      <p class="small">48개 조건의 방향 정답을 무작위로 섞은 데이터. 신호와 정답이 무관하므로 정상적인 정확도는 우연 수준(12.5%)</p>
       <p class="small" id="shuf-summary"></p>
       <div class="box" style="padding:12px 16px">
-        <h3 style="font-size:15px">진짜 데이터에서 검증 방법 비교 (가상 EEG 4채널)</h3>
+        <h3 style="font-size:15px">검증 방법별 정확도 (가상 EEG 4채널, 실제 정답)</h3>
         <table class="t" style="font-size:15px">
-          <tr><td>속도 기준 fold (올바름)</td><td class="num">84.1%</td></tr>
+          <tr><td>속도 기준 fold</td><td class="num">84.1%</td></tr>
           <tr><td>전체 데이터로 정규화</td><td class="num">84.2%</td></tr>
           <tr><td>무작위 5-fold (반복 측정 섞임)</td><td class="num">85.5%</td></tr>
         </table>

@@ -494,7 +494,7 @@
       });
       const lk = Math.max(...sh.leaky_mean), hn = sh.honest_mean.reduce((a, b) => a + b, 0) / sh.honest_mean.length;
       document.getElementById("shuf-summary").innerHTML =
-        `올바른 방법은 평균 <b>${pct(hn)}</b>로 우연 수준을 넘지 못한다. 테스트 정답을 보고 고르면 최대 <b class="bad-t">${pct(lk)}</b>까지 올라간다. 관계가 없는 데이터에서 "성능"을 만들어 낸 것 = 누수가 만드는 착시.`;
+        `학습 fold 안에서 선택: 평균 <b>${pct(hn)}</b> (우연 수준 이하)<br>테스트 정답을 보고 선택: 최대 <b class="bad-t">${pct(lk)}</b>`;
     }
     const sel = document.getElementById("seltypes");
     if (sel) sel.innerHTML = fs.chosen_per_fold.map((f, i) => `<li><span class="mono">fold ${i + 1}</span> ${f.slice(0, 4).map((t) => `<b>${t}</b>`).join(" → ")}</li>`).join("");
