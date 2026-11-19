@@ -1,4 +1,5 @@
 .venv/
-data/
+# 최상위 data/(캐시)만 제외. site/data/data.js는 배포에 필요하므로 포함
+/data/
 __pycache__/
 *.pyc

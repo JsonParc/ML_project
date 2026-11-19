@@ -240,8 +240,16 @@ def make_activity_video(rec, clean, n_pre, fs, plt):
         return scs + [cursor, txt]
 
     anim = FuncAnimation(fig, update, frames=frames, blit=False)
-    anim.save(MEDIA / "activity.mp4", writer=FFMpegWriter(fps=25, bitrate=1800), dpi=100)
+    # mp4: 웹 재생이 바로 시작되도록 faststart. H.264는 크롬·엣지·사파리에서 재생됨
+    anim.save(MEDIA / "activity.mp4", writer=FFMpegWriter(fps=25, bitrate=1800,
+              extra_args=["-pix_fmt", "yuv420p", "-movflags", "+faststart"]), dpi=100)
     plt.close(fig)
+    # WebM(VP9): H.264를 못 트는 브라우저(VS Code 내장 브라우저 등)용. 페이지는 WebM을 먼저 시도한다
+    import subprocess
+
+    subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), "-loglevel", "error", "-y", "-i", str(MEDIA / "activity.mp4"),
+                    "-c:v", "libvpx-vp9", "-b:v", "1500k", "-pix_fmt", "yuv420p", str(MEDIA / "activity.webm")],
+                   check=True)
     print(f"활동 애니메이션 저장: {MEDIA / 'activity.mp4'} ({len(frames)} 프레임)")
 
 

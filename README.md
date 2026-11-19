@@ -38,4 +38,8 @@ bash scripts/run.sh scripts/06_build_site.py              # results/ -> site/
 
 ## 배포 (Render Static Site)
 
-Publish directory를 `site`로, Build command는 비워 둔다. `site/index.html`은 인터넷 없이 파일을 더블클릭해도 열린다(데이터를 `data/data.js`로 넣었기 때문).
+방법 1 (Blueprint): Render 대시보드 → New → Blueprint → 이 저장소 선택. `render.yaml`대로 `site/`만 배포된다.
+
+방법 2 (직접 설정): New → Static Site → 이 저장소 선택 → Build Command 비움(또는 `echo "no build"`), Publish Directory `site`.
+
+배포되는 것은 `site/` 폴더뿐이다(docs/, scripts/, results/는 공개되지 않음). `site/index.html`은 인터넷 없이 파일을 더블클릭해도 열린다(데이터를 `data/data.js`로 넣었기 때문).
