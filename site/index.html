@@ -165,7 +165,7 @@
       <div class="why"><b>과적합 감소</b><p class="small">파라미터 수가 적어 광류 데이터만으로 학습 가능</p></div>
       <div class="why"><b>해석 가능성</b><p class="small">학습된 값이 세포 유형별 시간 상수 등 생물학적 의미를 가짐</p></div>
       <div class="why"><b>세포 단위 검증</b><p class="small">모델 뉴런이 실제 뉴런에 대응해 실험 결과와 직접 비교 가능</p></div>
-      <div class="why"><b>RNN (피드포워드 신경망 대신)</b><p class="small">뉴런의 현재 전압이 이전 시점의 전압과 다른 뉴런들의 이전 출력에 의존. 피드포워드 신경망은 시간에 따른 상태 변화를 표현하지 못함. 움직임 감지는 신호 간 시간 차이 계산이 핵심이라 순환 구조가 필요</p></div>
+      <div class="why"><b>RNN</b><p class="small">뉴런의 현재 전압이 이전 시점의 전압과 다른 뉴런들의 이전 출력에 의존. 커넥톰에 되먹임 연결이 있고 전압이 연속시간 동역학을 따르므로, 이를 그대로 옮기면 RNN이 됨. 시간 합성곱 등 다른 시간 모델도 가능하지만, 실제 회로 구조와 일대일 대응이 되는 것은 RNN</p></div>
       <div class="why"><b>ReLU</b><p class="small">일정 전압 이상에서만 신호를 전달하는 시냅스 성질을 단순화한 것</p></div>
     </div>
   </div>
@@ -331,10 +331,10 @@
         <li>실제 뇌에서는 두 신호를 정답과 함께 동시에 얻기 어려움</li>
       </ul>
       <table class="t" style="font-size:15px">
-        <tr><th>신호</th><th>구성</th><th>대응</th></tr>
+        <tr><th>신호</th><th>구성</th><th>의미</th></tr>
         <tr><td class="sa-t">A · 65채널</td><td>세포 유형별 전압 평균</td><td>특정 세포 기록</td></tr>
-        <tr><td class="sb4-t">B · 4채널</td><td>눈의 4구역별 전체 뉴런 합</td><td>EEG 전극 4개</td></tr>
-        <tr><td class="sb1-t">B · 1채널</td><td>눈 전체 뉴런 합</td><td>EEG 전극 1개</td></tr>
+        <tr><td class="sb4-t">B · 4채널</td><td>눈의 4구역별 전체 뉴런 합</td><td>EEG식 공간 혼합을 단순화해 모사 (4구역)</td></tr>
+        <tr><td class="sb1-t">B · 1채널</td><td>눈 전체 뉴런 합</td><td>EEG식 공간 혼합을 단순화해 모사 (전체)</td></tr>
       </table>
       <p class="small muted">자극 48개(8방향 × 밝기 2 × 속도 3) × 측정 잡음 20회 · 특징: 최고·최저 전압, 최고점 시간, 평균 · 로지스틱 회귀 · 속도 기준 교차검증 · 정규화와 특징 선택은 학습 fold 안에서만</p>
     </div>
