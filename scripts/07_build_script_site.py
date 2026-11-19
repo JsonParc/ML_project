@@ -223,13 +223,15 @@ def main():
                         f'{render_body(b["body"], ann)}</section>')
             toc.append(f'<li class="ts"><a href="#{sid}">{html.escape(b["title"])}</a></li>')
 
+    nums = sorted({int(m) for m in re.findall(r'id="s(\d+)"', " ".join(body))})
+    chips = "".join(f'<a class="chip" href="#s{n}" data-n="{n}">{n}</a>' for n in nums)
     gloss = [{"title": e["title"], "category": e["category"], "body": e["body"]} for e in entries]
     used = sorted(ann.num.items(), key=lambda kv: kv[1])
     fnlist = "\n".join(f'<li id="fn{n}"><a href="#" data-g="{idx}">[{n}]</a> {html.escape(entries[idx]["title"])}</li>'
                        for idx, n in used)
     page = TEMPLATE.replace("{{TOC}}", "\n".join(toc)).replace("{{BODY}}", "\n".join(body)) \
         .replace("{{INTRO}}", intro_html).replace("{{FNLIST}}", fnlist) \
-        .replace("{{GLOSS}}", json.dumps(gloss, ensure_ascii=False)).replace("{{SLIDES}}", SLIDES_URL)
+        .replace("{{GLOSS}}", json.dumps(gloss, ensure_ascii=False)).replace("{{SLIDES}}", SLIDES_URL).replace("{{CHIPS}}", chips)
     OUT.parent.mkdir(exist_ok=True)
     OUT.write_text(page, encoding="utf-8")
     print(f"script.html 생성: 구간 {sum(b['kind'] == 'slide' for b in blocks)}개, 각주 용어 {len(used)}개 / 용어 {len(entries)}개")
@@ -256,11 +258,23 @@ TEMPLATE = r"""<!doctype html>
 }
 :root[data-theme="dark"] { --bg: #12171c; --panel: #1a2128; --fg: #e5eaee; --muted: #9aa6b0; --line: #2c353d; --accent: #ff7a3d; --link: #4fb3d9; --scrim: rgba(0,0,0,0.6); color-scheme: dark; }
 * { box-sizing: border-box; }
-html { scroll-padding-top: 16px; }
-body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 17px; line-height: 1.75; }
+html { scroll-padding-top: 76px; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 19px; line-height: 1.8; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--panel); }
+/* 패드용 상단 바: 슬라이드 번호를 눌러 바로 이동 */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--panel); border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 8px; padding-block: 8px;
+  padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); }
+.chips { display: flex; gap: 6px; overflow-x: auto; flex: 1; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; min-width: 42px; height: 42px; display: grid; place-items: center; border-radius: 8px; border: 1px solid var(--line);
+  font: 600 16px var(--mono); color: var(--fg); text-decoration: none; background: var(--bg); }
+.chip.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.topbar button, .topbar .btn { flex: none; height: 42px; font-size: 14px; }
+#wake.on { background: var(--accent); color: #fff; border-color: var(--accent); }
 .wrap { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 32px; max-width: 1180px; margin: 0 auto;
   padding-block: 28px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-nav.toc { position: sticky; top: 16px; align-self: start; max-height: calc(100vh - 32px); overflow-y: auto; font-size: 14px; }
+nav.toc { position: sticky; top: 76px; align-self: start; max-height: calc(100vh - 92px); overflow-y: auto; font-size: 14px; }
 nav.toc ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 2px; }
 nav.toc li.tp { margin-top: 12px; font-weight: 600; color: var(--accent); font-size: 13px; }
 nav.toc li.ts { padding-left: 10px; }
@@ -284,7 +298,7 @@ ul { margin: 6px 0; padding-left: 1.2em; }
 li.sub { margin-left: 1.2em; list-style: circle; }
 li.ans { list-style: none; color: var(--muted); margin-bottom: 6px; }
 sup.fn { font-size: 0.68em; line-height: 0; }
-sup.fn a { color: var(--link); text-decoration: none; font-weight: 600; padding: 0 1px; }
+sup.fn a { color: var(--link); text-decoration: none; font-weight: 600; padding: 6px 3px; font-size: 1.15em; }
 sup.fn a:hover, sup.fn a:focus-visible { text-decoration: underline; }
 .fnlist { columns: 2; font-size: 14px; list-style: none; padding: 0; }
 .fnlist a { color: var(--link); text-decoration: none; }
@@ -297,19 +311,22 @@ sup.fn a:hover, sup.fn a:focus-visible { text-decoration: underline; }
 #pop .inner { padding: 18px 22px; overflow-y: auto; }
 #pop .cat { font-size: 12px; color: var(--accent); font-weight: 600; }
 #pop h4 { margin: 2px 0 8px; font-size: 18px; }
-#pop .inner p { margin: 6px 0; font-size: 15.5px; }
-#pop .close { border: none; border-top: 1px solid var(--line); border-radius: 0 0 10px 10px; padding: 12px; font-size: 15px; width: 100%; }
-@media (max-width: 800px) { .wrap { grid-template-columns: 1fr; } nav.toc { position: static; max-height: none; } .fnlist { columns: 1; } }
+#pop .inner p { margin: 6px 0; font-size: 17px; }
+#pop .close { border: none; border-top: 1px solid var(--line); border-radius: 0 0 10px 10px; padding: 16px; font-size: 17px; width: 100%; }
+@media (max-width: 1100px) { .wrap { grid-template-columns: 1fr; } nav.toc { display: none; } }
+@media (max-width: 700px) { .fnlist { columns: 1; } }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 </style>
 </head>
 <body>
+<div class="topbar">
+  <div class="chips" id="chips">{{CHIPS}}</div>
+  <button id="wake" type="button" title="발표 중 화면이 꺼지지 않게">화면 켜짐 유지</button>
+  <button id="theme" type="button">테마</button>
+  <a class="btn" href="{{SLIDES}}" target="slides">슬라이드 ↗</a>
+</div>
 <div class="wrap">
   <nav class="toc" aria-label="목차">
-    <div class="tools">
-      <a class="btn" href="{{SLIDES}}" target="slides">슬라이드 ↗</a>
-      <button id="theme" type="button">테마</button>
-    </div>
     <ul>{{TOC}}<li class="tp"><a href="#fns">각주 용어 목록</a></li></ul>
   </nav>
   <main>
@@ -351,6 +368,33 @@ document.getElementById("theme").onclick = () => {
   const dark = r.dataset.theme === "dark" || (!r.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
   r.dataset.theme = dark ? "light" : "dark";
 };
+// 지금 읽고 있는 구간 번호를 상단 바에서 강조
+const chips = [...document.querySelectorAll(".chip")];
+const secs = chips.map(c => document.getElementById("s" + c.dataset.n)).filter(Boolean);
+function mark() {
+  let cur = secs[0];
+  for (const s of secs) if (s.getBoundingClientRect().top < 120) cur = s;
+  chips.forEach(c => {
+    const on = cur && c.dataset.n === cur.id.slice(1);
+    if (on && !c.classList.contains("on")) c.scrollIntoView({ inline: "center", block: "nearest" });
+    c.classList.toggle("on", on);
+  });
+}
+addEventListener("scroll", mark, { passive: true });
+mark();
+// 화면 켜짐 유지 (Wake Lock 지원 브라우저에서만)
+let lock = null;
+const wake = document.getElementById("wake");
+if (!("wakeLock" in navigator)) wake.hidden = true;
+async function setWake(on) {
+  try {
+    if (on) { lock = await navigator.wakeLock.request("screen"); lock.addEventListener("release", () => { if (!document.hidden) wake.classList.remove("on"); }); }
+    else if (lock) { await lock.release(); lock = null; }
+    wake.classList.toggle("on", on);
+  } catch (e) { wake.classList.remove("on"); }
+}
+wake.onclick = () => setWake(!wake.classList.contains("on"));
+document.addEventListener("visibilitychange", () => { if (!document.hidden && wake.classList.contains("on")) setWake(true); });
 </script>
 </body>
 </html>
