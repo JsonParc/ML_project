@@ -23,7 +23,7 @@ Lappalainen et al., "Connectome-constrained networks predict neural activity acr
 ```bash
 # uv로 만든 Python 3.12 가상환경 안에서
 uv pip install torch==2.15.0 torchvision==0.29.2 --index-url https://download.pytorch.org/whl/cpu
-uv pip install -r requirements.txt
+uv pip install -r env/requirements.txt
 flyvis download-pretrained --skip_large_files      # .env의 FLYVIS_ROOT_DIR(data/flyvis)로 받는다
 
 bash scripts/run.sh scripts/00_smoke_test.py
@@ -43,7 +43,7 @@ Render 설정 (Settings → Build & Deploy)
 - Build Command: `echo "no build"` (또는 비움)
 - Publish Directory: `.`
 
-Root Directory를 `site`로 두지 않으면 Render가 최상위 `requirements.txt`를 보고 파이썬 패키지를 설치하려다 실패한다(flyvis는 Python 3.13 미지원). 사이트는 HTML/JS뿐이라 설치가 필요 없다.
+파이썬 의존성 파일은 `env/requirements.txt`에 둔다. 최상위에 `requirements.txt`가 있으면 Render가 파이썬 패키지를 자동 설치하려다 실패한다(flyvis는 Python 3.13 미지원). 사이트는 HTML/JS뿐이라 설치가 필요 없다.
 Blueprint로 만들 때는 `render.yaml`에 같은 설정이 들어 있다.
 
 공개되는 것은 `site/` 폴더뿐이다(docs/, scripts/, results/는 공개되지 않음). `site/index.html`은 인터넷 없이 파일을 더블클릭해도 열린다.

@@ -1,6 +1,6 @@
 # Render Blueprint: 발표 사이트(site/)만 정적 사이트로 배포한다.
-# rootDir을 site로 두는 이유: 저장소 최상위의 requirements.txt를 Render가 발견하면
-# 파이썬 패키지(flyvis 등)를 자동 설치하려다 실패한다. 사이트는 HTML/JS뿐이라 설치가 필요 없다.
+# 파이썬 의존성은 env/requirements.txt에 둔다(최상위 requirements.txt가 있으면 Render가
+# 자동 설치하려다 실패). 사이트는 HTML/JS뿐이라 설치가 필요 없다.
 services:
   - type: web
     name: flyvis-decoding
