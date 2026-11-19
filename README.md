@@ -38,8 +38,12 @@ bash scripts/run.sh scripts/06_build_site.py              # results/ -> site/
 
 ## 배포 (Render Static Site)
 
-방법 1 (Blueprint): Render 대시보드 → New → Blueprint → 이 저장소 선택. `render.yaml`대로 `site/`만 배포된다.
+Render 설정 (Settings → Build & Deploy)
+- Root Directory: `site`
+- Build Command: `echo "no build"` (또는 비움)
+- Publish Directory: `.`
 
-방법 2 (직접 설정): New → Static Site → 이 저장소 선택 → Build Command 비움(또는 `echo "no build"`), Publish Directory `site`.
+Root Directory를 `site`로 두지 않으면 Render가 최상위 `requirements.txt`를 보고 파이썬 패키지를 설치하려다 실패한다(flyvis는 Python 3.13 미지원). 사이트는 HTML/JS뿐이라 설치가 필요 없다.
+Blueprint로 만들 때는 `render.yaml`에 같은 설정이 들어 있다.
 
-배포되는 것은 `site/` 폴더뿐이다(docs/, scripts/, results/는 공개되지 않음). `site/index.html`은 인터넷 없이 파일을 더블클릭해도 열린다(데이터를 `data/data.js`로 넣었기 때문).
+공개되는 것은 `site/` 폴더뿐이다(docs/, scripts/, results/는 공개되지 않음). `site/index.html`은 인터넷 없이 파일을 더블클릭해도 열린다.
