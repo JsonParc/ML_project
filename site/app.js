@@ -7,6 +7,13 @@
 
   /* ------------------------------------------------------------ 슬라이드 엔진 */
   const slides = Array.from(document.querySelectorAll(".slide"));
+  // 슬라이드마다 대본의 몇 번 구간인지 표시 (대본 사이트의 [N번]과 같은 번호)
+  slides.forEach((s, k) => {
+    const tag = document.createElement("div");
+    tag.className = "scriptref";
+    tag.textContent = `대본 ${k + 1}번`;
+    s.appendChild(tag);
+  });
   const counter = document.getElementById("counter");
   const bar = document.getElementById("progress");
   let cur = 0;

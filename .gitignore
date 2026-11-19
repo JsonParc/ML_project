@@ -1,5 +1,7 @@
 .venv/
 # 최상위 data/(캐시)만 제외. site/data/data.js는 배포에 필요하므로 포함
 /data/
+# 대본 사이트는 별도 저장소(JsonParc/ML_scrpit)로 관리
+/script_site/
 __pycache__/
 *.pyc

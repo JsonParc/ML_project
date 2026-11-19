@@ -218,6 +218,10 @@ table.cmp th.me { color: var(--accent); font-size: 16px; }
 .ubar .known { background: var(--sa); color: #fff; }
 .ubar .unk { background: var(--hex); color: var(--fg); border: 2px dashed var(--accent); border-left: none; border-radius: 0 8px 8px 0; }
 
+/* 슬라이드별 대본 번호 */
+.scriptref { position: absolute; top: 26px; right: 72px; font: 500 12px var(--mono); color: var(--muted);
+  border: 1px solid var(--line); border-radius: 4px; padding: 1px 7px; }
+
 /* 하단 조작부 */
 #nav {
   position: fixed; right: max(14px, env(safe-area-inset-right, 0px)); bottom: calc(10px + env(safe-area-inset-bottom, 0px));
