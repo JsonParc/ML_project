@@ -250,6 +250,11 @@ def make_activity_video(rec, clean, n_pre, fs, plt):
     subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), "-loglevel", "error", "-y", "-i", str(MEDIA / "activity.mp4"),
                     "-c:v", "libvpx-vp9", "-b:v", "1500k", "-pix_fmt", "yuv420p", str(MEDIA / "activity.webm")],
                    check=True)
+    # 움직이는 WebP 이미지: 발표 사이트는 이것을 <img>로 쓴다. 영상 재생기(코덱, 로컬 파일 제한)와 관계없이
+    # GIF처럼 어느 브라우저에서나 자동 반복 재생된다.
+    subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), "-loglevel", "error", "-y", "-i", str(MEDIA / "activity.mp4"),
+                    "-vf", "fps=20,scale=900:-1:flags=lanczos", "-c:v", "libwebp_anim", "-loop", "0",
+                    "-quality", "80", str(MEDIA / "activity.webp")], check=True)
     print(f"활동 애니메이션 저장: {MEDIA / 'activity.mp4'} ({len(frames)} 프레임)")
 
 
