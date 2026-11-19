@@ -305,7 +305,7 @@
         const pref = R.known_preferred_deg[ct];
         cap.innerHTML = mode === "top"
           ? `<b>${ct}</b><span>${c.top_correct}/10 정답</span>`
-          : `<b>${ct}</b><span>실제 ${pref}° · 모델 ${Math.round(c.best_pref_deg)}°</span>`;
+          : `<b>${ct}</b><span>${pref}° / ${Math.round(c.best_pref_deg)}°</span>`;
         box.appendChild(cap);
         host.appendChild(box);
       });
@@ -332,6 +332,21 @@
     });
     document.querySelectorAll("input[name=pmode]").forEach((r) => (r.onchange = () => { mode = r.value; draw(); }));
     draw();
+
+    // 5부 논문 결과: 실제 측정 튜닝 곡선만 (Maisak 2013)
+    const gt = document.getElementById("gtpolars");
+    if (gt) order.forEach((ct) => {
+      const c = R.cell_types[ct];
+      const box = document.createElement("div");
+      box.className = "polar " + (c.edge === "bright" ? "on" : "off");
+      const svg = el("svg", { viewBox: "0 0 150 150" }, box);
+      polar(svg, 75, 77, 56, [{ r: c.measured_norm, angles, color: c.edge === "bright" ? "var(--on)" : "var(--off)", width: 2.4, fill: true }], { labels: false });
+      const cap = document.createElement("div");
+      cap.className = "pcap";
+      cap.innerHTML = `<b>${ct}</b><span>${R.known_preferred_deg[ct]}°</span>`;
+      box.appendChild(cap);
+      gt.appendChild(box);
+    });
   }
 
   /* ------------------------------------------------------------ 앙상블 */

@@ -3,7 +3,7 @@
 머신러닝 수업 논문 발표 자료.
 Lappalainen et al., "Connectome-constrained networks predict neural activity across the fly visual system", *Nature* 634 (2024) · 공식 코드 [flyvis](https://github.com/TuragaLab/flyvis)
 
-- **발표 사이트**: `site/` (정적 웹사이트, 슬라이드 25장, ← → 키로 이동, T 키로 밝게/어둡게)
+- **발표 사이트**: `site/` (정적 웹사이트, 본편 20장 + 질문 대비 부록 7장, ← → 키로 이동, T 키로 밝게/어둡게)
 - **결과 요약**: [results/summary.md](results/summary.md)
 - **발표 대본**: [docs/발표준비.md](docs/발표준비.md), 실험 설명: [docs/내실험.md](docs/내실험.md)
 
