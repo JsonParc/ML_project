@@ -5,8 +5,8 @@ Lappalainen et al., "Connectome-constrained networks predict neural activity acr
 
 - **발표 사이트**: `site/` (정적 웹사이트, 본편 20장 + 질문 대비 부록 7장, ← → 키로 이동, T 키로 밝게/어둡게)
 - **결과 요약**: [results/summary.md](results/summary.md)
-- **발표 대본**: [docs/발표준비.md](docs/발표준비.md) (슬라이드별 대본, 논문 실험 상세, 예상 질문)
-- **용어 정리**: [docs/용어정리.md](docs/용어정리.md)
+- **발표 대본**: docs/발표대본.txt (슬라이드별 대본, 논문 실험 상세, 예상 질문)
+- **용어 정리**: docs/용어정리.txt
 - **추가 실험 설명**: [docs/내실험.md](docs/내실험.md)
 
 ## 핵심 결과
