@@ -1,0 +1,11 @@
+# torch/torchvision은 CPU 전용 인덱스에서 먼저 설치:
+#   uv pip install torch==2.15.0 torchvision==0.29.2 --index-url https://download.pytorch.org/whl/cpu
+# (torchvision을 PyPI에서 받으면 torch와 버전이 어긋나 "operator torchvision::nms does not exist" 오류)
+flyvis==1.2.0
+scikit-learn==1.9.1
+matplotlib==3.11.2
+pandas==3.1.1
+numpy==2.5.4
+scipy==1.18.1
+xarray==2026.9.0
+imageio-ffmpeg==0.8.1   # MP4 저장용 ffmpeg 실행 파일 (sudo apt 없이)
