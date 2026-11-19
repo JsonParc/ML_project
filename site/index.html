@@ -79,7 +79,7 @@
     <div class="col grow" style="gap:16px">
       <div class="box">
         <h3>커넥톰으로 알 수 있는 것</h3>
-        <p class="small">뉴런 간 연결 여부, 시냅스 개수, 흥분성/억제성</p>
+        <p class="small">뉴런 간 연결 여부, 시냅스 개수<br>흥분성/억제성 부호는 세포 유형의 신경전달물질 정보로 추정해 반영</p>
       </div>
       <div class="box">
         <h3>커넥톰으로 알 수 없는 것</h3>
@@ -117,7 +117,7 @@
   <div class="grid2">
     <div class="pt"><div class="n">1</div><div><h3>뉴런 측정 데이터 없이 학습</h3><p class="small">구조는 커넥톰으로 고정, 나머지 값은 움직임 감지 과제로 학습. 학습 과정에 뉴런 측정 데이터를 쓰지 않음</p></div></div>
     <div class="pt"><div class="n">2</div><div><h3>모델 뉴런과 실제 뉴런의 일대일 대응</h3><p class="small">모델 뉴런 하나가 특정 세포 유형·위치의 실제 뉴런에 대응. 실험 결과와 세포 단위로 직접 비교 가능</p></div></div>
-    <div class="pt"><div class="n">3</div><div><h3>규모</h3><p class="small">세포 유형 65개(광수용체 포함), 뉴런 45,669개, 연결 1,513,231개. 시각엽 움직임 경로 전체를 하나의 모델로 학습</p></div></div>
+    <div class="pt"><div class="n">3</div><div><h3>규모</h3><p class="small">세포 유형 64개(모델에서는 CT1을 두 구획으로 나눠 65개), 뉴런 45,669개, 연결 1,513,231개. 시각엽 움직임 경로 전체를 하나의 모델로 학습</p></div></div>
     <div class="pt"><div class="n">4</div><div><h3>앙상블을 통한 신뢰도 평가</h3><p class="small">같은 설정으로 50개 모델 학습. 모델 간 예측이 일치하는지로 예측의 신뢰도 판단</p></div></div>
   </div>
 </section>
@@ -129,8 +129,8 @@
   <div class="row" style="gap:30px">
     <div class="col grow" style="gap:14px">
       <div class="eq">
-        τ<sub>t</sub> · dV<sub>i</sub>/dt = −V<sub>i</sub> + V<sub>t</sub><sup>rest</sup> + Σ<sub>j</sub> w<sub>ij</sub> · ReLU(V<sub>j</sub>) + 입력<sub>i</sub>
-        <div class="small muted" style="margin-top:6px">w<sub>ij</sub> = 부호 × 시냅스 개수 × 세기 배율 &nbsp;·&nbsp; t = 뉴런 i의 세포 유형</div>
+        τ<sub>c(i)</sub> · dV<sub>i</sub>/dt = −V<sub>i</sub> + V<sub>c(i)</sub><sup>rest</sup> + Σ<sub>j</sub> w<sub>ij</sub> · ReLU(V<sub>j</sub>) + 입력<sub>i</sub>
+        <div class="small muted" style="margin-top:6px;font-family:var(--font);white-space:normal">i, j = 뉴런 &nbsp;·&nbsp; c(i) = 뉴런 i의 세포 유형 &nbsp;·&nbsp; w<sub>ij</sub> = 부호 × 시냅스 개수 × 세기 배율</div>
       </div>
       <table class="t">
         <tr><th>RNN</th><th>DMN</th></tr>
@@ -143,11 +143,12 @@
     </div>
     <div class="col" style="width:380px;gap:12px">
       <h3>고정 값과 학습 값</h3>
-      <div class="param fixed"><span>커넥톰에서 고정</span><b>연결 여부 · 부호 · 시냅스 개수</b></div>
+      <div class="param fixed"><span>커넥톰·신경전달물질 정보에서 고정</span><b>연결 여부 · 부호 · 시냅스 개수</b></div>
       <div class="param learn"><span>학습 (세포 유형별)</span><b>시간 상수 τ</b><em class="mono">65</em></div>
       <div class="param learn"><span>학습 (세포 유형별)</span><b>휴지 전위 V<sup>rest</sup></b><em class="mono">65</em></div>
       <div class="param learn"><span>학습 (연결 종류별)</span><b>시냅스 세기 배율</b><em class="mono">604</em></div>
-      <div class="param total"><b>학습 파라미터 합계</b><em class="mono">734</em></div>
+      <div class="param total"><b>DMN 학습 파라미터 합계</b><em class="mono">734</em></div>
+      <p class="small muted">65 = 세포 유형 64개 중 CT1을 두 구획으로 나눈 모델 내부 유형 수<br>디코더 파라미터 7,427개는 별도 (DMN과 함께 학습)</p>
     </div>
   </div>
 </section>
@@ -187,7 +188,7 @@
     <div class="why grow"><b>육각 합성곱</b><p class="small">겹눈 기둥이 육각 격자이므로 정사각 필터에 육각 마스크 적용</p></div>
     <div class="why grow"><b>정규화</b><p class="small">BatchNorm(학습 안정화), Dropout(과적합 방지)</p></div>
   </div>
-  <p class="small muted">flyvis DecoderGAVP, 사전학습 모델 설정(shape [8, 2], kernel 5, p_dropout 0.5) 기준</p>
+  <p class="small muted">디코더 학습 파라미터 7,427개, 입력은 출력 세포 유형 34개 · flyvis DecoderGAVP, 사전학습 모델 설정(shape [8, 2], kernel 5, p_dropout 0.5) 기준</p>
 </section>
 
 <!-- ======================================================================= 4부 -->

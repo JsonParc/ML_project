@@ -182,7 +182,7 @@ table.cmp th.me { color: var(--accent); font-size: 16px; }
 .pt.me h3 { color: var(--accent); }
 
 /* 3부: 식, 파라미터 칩, 이유 */
-.eq { font-family: var(--mono); font-size: 21px; line-height: 1.6; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; }
+.eq { font-family: var(--mono); font-size: 18px; white-space: nowrap; overflow-x: auto; line-height: 1.6; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; }
 .param { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 2px 10px; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line); }
 .param span { grid-column: 1 / -1; font-size: 12px; color: var(--muted); }
 .param b { font-size: 17px; font-weight: 600; }
