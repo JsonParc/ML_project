@@ -9,8 +9,10 @@
   const slides = Array.from(document.querySelectorAll(".slide"));
   // 슬라이드마다 대본의 몇 번 구간인지 표시 (대본 사이트의 [N번]과 같은 번호)
   slides.forEach((s, k) => {
-    const tag = document.createElement("div");
+    const tag = document.createElement("a");
     tag.className = "scriptref";
+    tag.href = `https://ml-scrpit.onrender.com/#s${k + 1}`;  // 대본 사이트의 같은 번호 구간
+    tag.target = "script";
     tag.textContent = `대본 ${k + 1}번`;
     s.appendChild(tag);
   });

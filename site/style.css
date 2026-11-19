@@ -220,7 +220,8 @@ table.cmp th.me { color: var(--accent); font-size: 16px; }
 
 /* 슬라이드별 대본 번호 */
 .scriptref { position: absolute; top: 26px; right: 72px; font: 500 12px var(--mono); color: var(--muted);
-  border: 1px solid var(--line); border-radius: 4px; padding: 1px 7px; }
+  border: 1px solid var(--line); border-radius: 4px; padding: 1px 7px; text-decoration: none; }
+.scriptref:hover { color: var(--accent); border-color: var(--accent); }
 
 /* 하단 조작부 */
 #nav {
